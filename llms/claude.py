@@ -1,27 +1,20 @@
-# @title Define and Test Claude Agent
 from google.adk.agents import Agent
-from google.adk.models.lite_llm import LiteLlm
-from tools.weather import get_weather
-# from google.adk.models.lite_llm import LiteLlm # For multi-model support
 from google.adk.sessions import InMemorySessionService
 from google.adk.runners import Runner
+from google.adk.models.lite_llm import LiteLlm
 
-from main import call_agent_async
-import asyncio
-
-# Make sure 'get_weather' function from Step 1 is defined in your environment.
-# Make sure 'call_agent_async' is defined from earlier.
+from tools.weather import get_weather
+from utils import call_agent_async
 
 MODEL_CLAUDE_SONNET = "anthropic/claude-3-sonnet-20240229"
-# --- Agent using Claude Sonnet ---
-weather_agent_claude = None # Initialize to None
-runner_claude = None      # Initialize runner to None
 
-async def test_claude_agent():
+weather_agent_claude = None
+runner_claude = None
+
+async def claude_agent(query:str):
     try:
         weather_agent_claude = Agent(
             name="weather_agent_claude",
-            # Key change: Wrap the LiteLLM model identifier
             model=LiteLlm(model=MODEL_CLAUDE_SONNET),
             description="Provides weather information (using Claude Sonnet).",
             instruction="You are a helpful weather assistant powered by Claude Sonnet. "
@@ -59,7 +52,7 @@ async def test_claude_agent():
         # --- Test the Claude Agent ---
         print("\n--- Testing Claude Agent ---")
         # Ensure call_agent_async uses the correct runner, user_id, session_id
-        await call_agent_async(query = "Weather in London please.",
+        await call_agent_async(query,
                                runner=runner_claude,
                                user_id=USER_ID_CLAUDE,
                                session_id=SESSION_ID_CLAUDE)
@@ -68,6 +61,6 @@ async def test_claude_agent():
         print(f"❌ Could not create or run Claude agent '{MODEL_CLAUDE_SONNET}'. Check API Key and model name. Error: {e}")
 
 
-
-if __name__ == "__main__":
-    asyncio.run(test_claude_agent())
+#
+# if __name__ == "__main__":
+#     asyncio.run(test_claude_agent())

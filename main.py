@@ -1,24 +1,12 @@
 import os
+
+from utils import call_agent_async
+from dotenv import load_dotenv
 import asyncio
 
-from google.adk.agents import Agent
-# from google.adk.models.lite_llm import LiteLlm # For multi-model support
-from google.adk.sessions import InMemorySessionService
-from google.adk.runners import Runner
-
-from google.genai import types # For creating message Content/Parts
-from google import genai
-
-
-from dotenv import load_dotenv
-
-from llms.gemini import runner_gemini
+from llms.gemini import gemini_agent
 from llms.claude import runner_claude
 from llms.gpt import runner_gpt
-
-from tools.weather import get_weather
-from memory import  USER_ID, SESSION_ID
-
 
 import warnings
 # Ignore all warnings
@@ -74,48 +62,11 @@ print(f"Anthropic API Key set: {'Yes' if os.environ.get('ANTHROPIC_API_KEY') and
 # Configure ADK to use API keys directly (not Vertex AI for this multi-model setup)
 os.environ["GOOGLE_GENAI_USE_VERTEXAI"] = "False"
 
-runner = runner_gemini
 
-# @title Define Agent Interaction Function
-import asyncio
-from google.genai import types # For creating message Content/Parts
-
-async def call_agent_async(query: str):
-  """Sends a query to the agent and prints the final response."""
-  print(f"\n>>> User Query: {query}")
-
-  # Prepare the user's message in ADK format
-  content = types.Content(role='user', parts=[types.Part(text=query)])
-  print('types.Part(text=query)===', types.Part(text=query))
-  print('content===', content)
-
-  final_response_text = "Agent did not produce a final response." # Default
-
-  # Key Concept: run_async executes the agent logic and yields Events.
-  # We iterate through events to find the final answer.
-  async for event in runner.run_async(user_id=USER_ID, session_id=SESSION_ID, new_message=content):
-      # You can uncomment the line below to see *all* events during execution
-      print(f"  [Event] Author: {event.author}, Type: {type(event).__name__}, Final: {event.is_final_response()}, Content: {event.content}")
-
-      # Key Concept: is_final_response() marks the concluding message for the turn.
-      if event.is_final_response():
-          if event.content and event.content.parts:
-             # Assuming text response in the first part
-             final_response_text = event.content.parts[0].text
-          elif event.actions and event.actions.escalate: # Handle potential errors/escalations
-             final_response_text = f"Agent escalated: {event.error_message or 'No specific message.'}"
-          # Add more checks here if needed (e.g., specific error codes)
-          break # Stop processing events once the final response is found
-
-  print(f"<<< Agent Response: {final_response_text}")
-
-  # @title Run the Initial Conversation
-
-  # We need an async function to await our interaction helper
 async def run_conversation():
-    await call_agent_async("What is the weather like in London?")
-    await call_agent_async("How about Paris?")
-    await call_agent_async("Tell me the weather in New York")
+    await gemini_agent("What is the weather like in London?")
+    # await call_agent_async("How about Paris?", runner)
+    # await call_agent_async("Tell me the weather in New York", runner)
 
 if __name__ == "__main__":
   # asyncio.run(list_models())

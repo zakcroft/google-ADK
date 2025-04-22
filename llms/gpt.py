@@ -1,21 +1,17 @@
-# @title Define and Test GPT Agent
 from google.adk.agents import Agent
-from google.adk.models.lite_llm import LiteLlm
-from tools.weather import get_weather
-# from google.adk.models.lite_llm import LiteLlm # For multi-model support
 from google.adk.sessions import InMemorySessionService
 from google.adk.runners import Runner
+from google.adk.models.lite_llm import LiteLlm
 
-from main import call_agent_async
-import asyncio
+from tools.weather import get_weather
+from utils import call_agent_async
 
 MODEL_GPT_4O = "openai/gpt-4o"
-MODEL_CLAUDE_SONNET = "anthropic/claude-3-sonnet-20240229"
 
 weather_agent_gpt = None
 runner_gpt = None
 
-async def test_gpt_agent():
+async def gpt_agent(query:str):
     try:
         weather_agent_gpt = Agent(
             name="weather_agent_gpt",
@@ -52,10 +48,8 @@ async def test_gpt_agent():
             )
         print(f"Runner created for agent '{runner_gpt.agent.name}'.")
 
-        # --- Test the GPT Agent ---
-        print("\n--- Testing GPT Agent ---")
         # Ensure call_agent_async uses the correct runner, user_id, session_id
-        await call_agent_async(query = "What's the weather in Tokyo?",
+        await call_agent_async(query,
                                runner=runner_gpt,
                                user_id=USER_ID_GPT,
                                session_id=SESSION_ID_GPT)
@@ -63,5 +57,5 @@ async def test_gpt_agent():
     except Exception as e:
         print(f"❌ Could not create or run GPT agent '{MODEL_GPT_4O}'. Check API Key and model name. Error: {e}")
 
-if __name__ == "__main__":
-    asyncio.run(test_gpt_agent())
+# if __name__ == "__main__":
+#     asyncio.run(test_gpt_agent())
