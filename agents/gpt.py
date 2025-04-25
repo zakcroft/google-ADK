@@ -11,7 +11,8 @@ MODEL_GPT_4O = "openai/gpt-4o"
 weather_agent_gpt = None
 runner_gpt = None
 
-async def gpt_agent(query:str):
+
+async def gpt_agent(query: str):
     try:
         weather_agent_gpt = Agent(
             name="weather_agent_gpt",
@@ -20,17 +21,17 @@ async def gpt_agent(query:str):
             instruction="You are a helpful weather assistant powered by GPT-4o. "
                         "Use the 'get_weather' tool for city weather requests. "
                         "Clearly present successful reports or polite error messages based on the tool's output status.",
-            tools=[get_weather], # Re-use the same tool
+            tools=[get_weather],  # Re-use the same tool
         )
         print(f"Agent '{weather_agent_gpt.name}' created using model '{MODEL_GPT_4O}'.")
 
         # InMemorySessionService is simple, non-persistent storage for this tutorial.
-        session_service_gpt = InMemorySessionService() # Create a dedicated service
+        session_service_gpt = InMemorySessionService()  # Create a dedicated service
 
         # Define constants for identifying the interaction context
-        APP_NAME_GPT = "weather_tutorial_app_gpt" # Unique app name for this test
+        APP_NAME_GPT = "weather_tutorial_app_gpt"  # Unique app name for this test
         USER_ID_GPT = "user_1_gpt"
-        SESSION_ID_GPT = "session_001_gpt" # Using a fixed ID for simplicity
+        SESSION_ID_GPT = "session_001_gpt"  # Using a fixed ID for simplicity
 
         # Create the specific session where the conversation will happen
         session_gpt = session_service_gpt.create_session(
@@ -43,9 +44,9 @@ async def gpt_agent(query:str):
         # Create a runner specific to this agent and its session service
         runner_gpt = Runner(
             agent=weather_agent_gpt,
-            app_name=APP_NAME_GPT,       # Use the specific app name
-            session_service=session_service_gpt # Use the specific session service
-            )
+            app_name=APP_NAME_GPT,  # Use the specific app name
+            session_service=session_service_gpt  # Use the specific session service
+        )
         print(f"Runner created for agent '{runner_gpt.agent.name}'.")
 
         # Ensure call_agent_async uses the correct runner, user_id, session_id

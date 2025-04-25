@@ -4,9 +4,9 @@ from utils import call_agent_async
 from dotenv import load_dotenv
 import asyncio
 
-from llms.gemini import gemini_agent
-from llms.claude import runner_claude
-from llms.gpt import runner_gpt
+from agents.gemini import gemini_agent
+from agents.claude import runner_claude
+from agents.gpt import runner_gpt
 
 import warnings
 # Ignore all warnings

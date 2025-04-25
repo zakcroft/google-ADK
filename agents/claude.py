@@ -11,7 +11,8 @@ MODEL_CLAUDE_SONNET = "anthropic/claude-3-sonnet-20240229"
 weather_agent_claude = None
 runner_claude = None
 
-async def claude_agent(query:str):
+
+async def claude_agent(query: str):
     try:
         weather_agent_claude = Agent(
             name="weather_agent_claude",
@@ -21,17 +22,17 @@ async def claude_agent(query:str):
                         "Use the 'get_weather' tool for city weather requests. "
                         "Analyze the tool's dictionary output ('status', 'report'/'error_message'). "
                         "Clearly present successful reports or polite error messages.",
-            tools=[get_weather], # Re-use the same tool
+            tools=[get_weather],  # Re-use the same tool
         )
         print(f"Agent '{weather_agent_claude.name}' created using model '{MODEL_CLAUDE_SONNET}'.")
 
         # InMemorySessionService is simple, non-persistent storage for this tutorial.
-        session_service_claude = InMemorySessionService() # Create a dedicated service
+        session_service_claude = InMemorySessionService()  # Create a dedicated service
 
         # Define constants for identifying the interaction context
-        APP_NAME_CLAUDE = "weather_tutorial_app_claude" # Unique app name
+        APP_NAME_CLAUDE = "weather_tutorial_app_claude"  # Unique app name
         USER_ID_CLAUDE = "user_1_claude"
-        SESSION_ID_CLAUDE = "session_001_claude" # Using a fixed ID for simplicity
+        SESSION_ID_CLAUDE = "session_001_claude"  # Using a fixed ID for simplicity
 
         # Create the specific session where the conversation will happen
         session_claude = session_service_claude.create_session(
@@ -44,9 +45,9 @@ async def claude_agent(query:str):
         # Create a runner specific to this agent and its session service
         runner_claude = Runner(
             agent=weather_agent_claude,
-            app_name=APP_NAME_CLAUDE,       # Use the specific app name
-            session_service=session_service_claude # Use the specific session service
-            )
+            app_name=APP_NAME_CLAUDE,  # Use the specific app name
+            session_service=session_service_claude  # Use the specific session service
+        )
         print(f"Runner created for agent '{runner_claude.agent.name}'.")
 
         # --- Test the Claude Agent ---
@@ -58,8 +59,8 @@ async def claude_agent(query:str):
                                session_id=SESSION_ID_CLAUDE)
 
     except Exception as e:
-        print(f"❌ Could not create or run Claude agent '{MODEL_CLAUDE_SONNET}'. Check API Key and model name. Error: {e}")
-
+        print(
+            f"❌ Could not create or run Claude agent '{MODEL_CLAUDE_SONNET}'. Check API Key and model name. Error: {e}")
 
 #
 # if __name__ == "__main__":
