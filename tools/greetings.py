@@ -20,8 +20,8 @@ def say_goodbye() -> str:
     print(f"--- Tool: say_goodbye called ---")
     return "Goodbye! Have a great day."
 
-print("Greeting and Farewell tools defined.")
-
-# Optional self-test
-print(say_hello("Alice"))
-print(say_goodbye())
+# print("Greeting and Farewell tools defined.")
+#
+# # Optional self-test
+# print(say_hello("Alice"))
+# print(say_goodbye())

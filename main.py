@@ -4,6 +4,7 @@ from utils import call_agent_async
 from dotenv import load_dotenv
 import asyncio
 
+from agents.root_gemini import root_gemini_agent
 from agents.gemini import gemini_agent
 from agents.claude import runner_claude
 from agents.gpt import runner_gpt
@@ -64,7 +65,9 @@ os.environ["GOOGLE_GENAI_USE_VERTEXAI"] = "False"
 
 
 async def run_conversation():
-    await gemini_agent("What is the weather like in London?")
+    await root_gemini_agent("hi")
+    # await root_gemini_agent("What is the weather like in London?")
+    # await gemini_agent("What is the weather like in London?")
     # await call_agent_async("How about Paris?", runner)
     # await call_agent_async("Tell me the weather in New York", runner)
 
