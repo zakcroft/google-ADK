@@ -1,7 +1,7 @@
 # @title 4. Interact to Test State Flow and output_key
 import asyncio # Ensure asyncio is imported
 
-from session_test.agents import runner_root_stateful
+from agents import runner_root_stateful
 from consts import *
 from session_test.session_state_test import USER_ID_STATEFUL, SESSION_ID_STATEFUL, session_service_stateful
 from utils import call_agent_async
