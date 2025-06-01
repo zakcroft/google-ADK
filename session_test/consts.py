@@ -1,6 +1,6 @@
-APP_NAME = "session_state_test"
-USER_ID = "session_state_testuser_1_test"
-SESSION_ID = "session_state_testsession_001_test"
+APP_NAME = "session_state_APP_NAME"
+USER_ID = "session_state_user_ID"
+SESSION_ID = "session_state_ID"
 
 MODEL_GEMINI_2_0_FLASH = "gemini-2.0-flash"  # on the live api
 MODEL_GEMINI_2_5_FLASH = "gemini-2.5-flash-preview-04-17"
