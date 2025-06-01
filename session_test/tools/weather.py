@@ -1,5 +1,6 @@
 from google.adk.tools.tool_context import ToolContext
 
+
 def get_weather_stateful(city: str, tool_context: ToolContext) -> dict:
     """Retrieves weather, converts temp unit based on session state."""
     print(f"--- Tool: get_weather_stateful called for {city} ---")

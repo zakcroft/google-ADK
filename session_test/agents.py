@@ -1,13 +1,19 @@
+# @title 3. Redefine Sub-Agents and Update Root Agent with output_key
+
+# Ensure necessary imports: Agent, LiteLlm, Runner
 from google.adk.agents import Agent
 from google.adk.models.lite_llm import LiteLlm
 from google.adk.runners import Runner
 
-from consts import *
+from session_test.tools.greetings import say_hello, say_goodbye
+from session_test.tools.weather import get_weather_stateful
+from session_test.consts import *
+from session_test.session_state_test import session_service_stateful
 
-from tools.greetings import say_hello, say_goodbye
-from weather_tool import get_weather_stateful
-from session_state_test import session_service_stateful
+# Ensure tools 'say_hello', 'say_goodbye' are defined (from Step 3)
+# Ensure model constants MODEL_GPT_4O, MODEL_GEMINI_2_0_FLASH etc. are defined
 
+# --- Redefine Greeting Agent (from Step 3) ---
 greeting_agent = None
 try:
     greeting_agent = Agent(

@@ -1,6 +1,7 @@
+# Define a NEW session ID for this part of the tutorial
 APP_NAME = "session_state_APP_NAME"
-USER_ID = "session_state_user_ID"
-SESSION_ID = "session_state_ID"
+SESSION_ID_STATEFUL = "session_state_demo_001"
+USER_ID_STATEFUL = "user_state_demo"
 
 MODEL_GEMINI_2_0_FLASH = "gemini-2.0-flash"  # on the live api
 MODEL_GEMINI_2_5_FLASH = "gemini-2.5-flash-preview-04-17"
