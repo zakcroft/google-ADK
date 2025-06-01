@@ -1,26 +1,27 @@
-# @title 4. Interact to Test State Flow and output_key
-import asyncio # Ensure asyncio is imported
+import asyncio
 
 from agents import runner_root_stateful
 from consts import *
-from session_test.session_state_test import USER_ID_STATEFUL, SESSION_ID_STATEFUL, session_service_stateful
+from session_test.session_state_test import session_service_stateful, run_session_state
 from utils import call_agent_async
 
-# Ensure the stateful runner (runner_root_stateful) is available from the previous cell
-# Ensure call_agent_async, USER_ID_STATEFUL, SESSION_ID_STATEFUL, APP_NAME are defined
 
 if 'runner_root_stateful' in globals() and runner_root_stateful:
     # Define the main async function for the stateful conversation logic.
     # The 'await' keywords INSIDE this function are necessary for async operations.
     async def run_stateful_conversation():
+        print(
+            f"Debug - Before run_session_state: APP_NAME={APP_NAME}, USER_ID_STATEFUL={USER_ID}, SESSION_ID_STATEFUL={SESSION_ID}")
+        await run_session_state()
+        print(f"Debug - After run_session_state: Checking if session exists...")
         print("\n--- Testing State: Temp Unit Conversion & output_key ---")
 
         # 1. Check weather (Uses initial state: Celsius)
         print("--- Turn 1: Requesting weather in London (expect Celsius) ---")
         await call_agent_async(query= "What's the weather in London?",
                                runner=runner_root_stateful,
-                               user_id=USER_ID_STATEFUL,
-                               session_id=SESSION_ID_STATEFUL
+                               user_id=USER_ID,
+                               session_id=SESSION_ID
                               )
 
         # 2. Manually update state preference to Fahrenheit - DIRECTLY MODIFY STORAGE
@@ -30,14 +31,14 @@ if 'runner_root_stateful' in globals() and runner_root_stateful:
             # NOTE: In production with persistent services (Database, VertexAI), you would
             # typically update state via agent actions or specific service APIs if available,
             # not by direct manipulation of internal storage.
-            stored_session = session_service_stateful.sessions[APP_NAME][USER_ID_STATEFUL][SESSION_ID_STATEFUL]
+            stored_session = session_service_stateful.sessions[APP_NAME][USER_ID][SESSION_ID]
             stored_session.state["user_preference_temperature_unit"] = "Fahrenheit"
             # Optional: You might want to update the timestamp as well if any logic depends on it
             # import time
             # stored_session.last_update_time = time.time()
             print(f"--- Stored session state updated. Current 'user_preference_temperature_unit': {stored_session.state.get('user_preference_temperature_unit', 'Not Set')} ---") # Added .get for safety
         except KeyError:
-            print(f"--- Error: Could not retrieve session '{SESSION_ID_STATEFUL}' from internal storage for user '{USER_ID_STATEFUL}' in app '{APP_NAME}' to update state. Check IDs and if session was created. ---")
+            print(f"--- Error: Could not retrieve session '{SESSION_ID}' from internal storage for user '{USER_ID}' in app '{APP_NAME}' to update state. Check IDs and if session was created. ---")
         except Exception as e:
              print(f"--- Error updating internal session state: {e} ---")
 
@@ -46,8 +47,8 @@ if 'runner_root_stateful' in globals() and runner_root_stateful:
         print("\n--- Turn 2: Requesting weather in New York (expect Fahrenheit) ---")
         await call_agent_async(query= "Tell me the weather in New York.",
                                runner=runner_root_stateful,
-                               user_id=USER_ID_STATEFUL,
-                               session_id=SESSION_ID_STATEFUL
+                               user_id=USER_ID,
+                               session_id=SESSION_ID
                               )
 
         # 4. Test basic delegation (should still work)
@@ -55,8 +56,8 @@ if 'runner_root_stateful' in globals() and runner_root_stateful:
         print("\n--- Turn 3: Sending a greeting ---")
         await call_agent_async(query= "Hi!",
                                runner=runner_root_stateful,
-                               user_id=USER_ID_STATEFUL,
-                               session_id=SESSION_ID_STATEFUL
+                               user_id=USER_ID,
+                               session_id=SESSION_ID
                               )
 
     # --- Execute the `run_stateful_conversation` async function ---
@@ -90,8 +91,8 @@ if 'runner_root_stateful' in globals() and runner_root_stateful:
     # This block runs after either execution method completes.
     print("\n--- Inspecting Final Session State ---")
     final_session = session_service_stateful.get_session(app_name=APP_NAME,
-                                                         user_id= USER_ID_STATEFUL,
-                                                         session_id=SESSION_ID_STATEFUL)
+                                                         user_id= USER_ID,
+                                                         session_id=SESSION_ID)
     if final_session:
         # Use .get() for safer access to potentially missing keys
         print(f"Final Preference: {final_session.state.get('user_preference_temperature_unit', 'Not Set')}")
