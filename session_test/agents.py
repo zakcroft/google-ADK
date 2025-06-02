@@ -7,6 +7,7 @@ from google.adk.runners import Runner
 
 from session_test.tools.greetings import say_hello, say_goodbye
 from session_test.tools.weather import get_weather_stateful
+from session_test.tools.tool_guardrail import block_paris_tool_guardrail
 from session_test.consts import *
 from session_test.session_state_test import session_service_stateful
 from session_test.guardrail import block_keyword_guardrail
@@ -47,7 +48,11 @@ root_agent_stateful = None
 runner_root_stateful = None # Initialize runner
 
 # Check prerequisites before creating the root agent
-if greeting_agent and farewell_agent and 'get_weather_stateful' in globals() and 'block_keyword_guardrail' in globals():
+if ('greeting_agent' in globals() and greeting_agent and
+    'farewell_agent' in globals() and farewell_agent and
+    'get_weather_stateful' in globals() and
+    'block_keyword_guardrail' in globals() and
+    'block_paris_tool_guardrail' in globals()):
 
     root_agent_model = MODEL_GEMINI_2_0_FLASH # Choose orchestration model
 
@@ -62,7 +67,8 @@ if greeting_agent and farewell_agent and 'get_weather_stateful' in globals() and
         tools=[get_weather_stateful], # Use the state-aware tool
         sub_agents=[greeting_agent, farewell_agent], # Include sub-agents
         output_key="last_weather_report", # <<< Auto-save agent's final weather response
-        before_model_callback=block_keyword_guardrail  # <<< Assign the guardrail callback
+        before_model_callback=block_keyword_guardrail,  # <<< Assign the guardrail callback
+        before_tool_callback=block_paris_tool_guardrail  # <<< Add tool guardrail
     )
     print(f"✅ Root Agent '{root_agent_stateful.name}' created using stateful tool and output_key.")
 

@@ -39,6 +39,10 @@ if 'runner_root_stateful' in globals() and runner_root_stateful:
         print("\n--- Turn 3: Sending a greeting (expect allowed) ---")
         await interaction_func("Hello again")
 
+        # 2. Blocked city (Should pass model callback, but be blocked by tool callback)
+        print("\n--- Turn 2: Requesting weather in Paris (expect blocked by tool guardrail) ---")
+        await interaction_func("How about Paris?")  # Tool callback should intercept this
+
         # 2. Manually update state preference to Fahrenheit - DIRECTLY MODIFY STORAGE
         print("\n--- Manually Updating State: Setting unit to Fahrenheit ---")
         try:

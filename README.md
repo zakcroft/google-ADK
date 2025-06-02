@@ -1,5 +1,7 @@
 # Session Test Module
 
+    python -m session_test.main
+
 This module demonstrates stateful agent interactions using Google's Agent Development Kit (ADK).
 
 ## Architecture Diagram
