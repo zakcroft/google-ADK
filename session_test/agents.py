@@ -9,6 +9,7 @@ from session_test.tools.greetings import say_hello, say_goodbye
 from session_test.tools.weather import get_weather_stateful
 from session_test.consts import *
 from session_test.session_state_test import session_service_stateful
+from session_test.guardrail import block_keyword_guardrail
 
 # Ensure tools 'say_hello', 'say_goodbye' are defined (from Step 3)
 # Ensure model constants MODEL_GPT_4O, MODEL_GEMINI_2_0_FLASH etc. are defined
@@ -46,7 +47,7 @@ root_agent_stateful = None
 runner_root_stateful = None # Initialize runner
 
 # Check prerequisites before creating the root agent
-if greeting_agent and farewell_agent and 'get_weather_stateful' in globals():
+if greeting_agent and farewell_agent and 'get_weather_stateful' in globals() and 'block_keyword_guardrail' in globals():
 
     root_agent_model = MODEL_GEMINI_2_0_FLASH # Choose orchestration model
 
@@ -60,7 +61,8 @@ if greeting_agent and farewell_agent and 'get_weather_stateful' in globals():
                     "Handle only weather requests, greetings, and farewells.",
         tools=[get_weather_stateful], # Use the state-aware tool
         sub_agents=[greeting_agent, farewell_agent], # Include sub-agents
-        output_key="last_weather_report" # <<< Auto-save agent's final weather response
+        output_key="last_weather_report", # <<< Auto-save agent's final weather response
+        before_model_callback=block_keyword_guardrail  # <<< Assign the guardrail callback
     )
     print(f"✅ Root Agent '{root_agent_stateful.name}' created using stateful tool and output_key.")
 
@@ -77,3 +79,4 @@ else:
     if not greeting_agent: print(" - greeting_agent definition missing.")
     if not farewell_agent: print(" - farewell_agent definition missing.")
     if 'get_weather_stateful' not in globals(): print(" - get_weather_stateful tool missing.")
+    if 'block_keyword_guardrail' not in globals(): print("   - 'block_keyword_guardrail' callback")

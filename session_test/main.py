@@ -18,14 +18,26 @@ if 'runner_root_stateful' in globals() and runner_root_stateful:
         # 1) Create the session in this same process
         await run_session_state()
 
+        # Use the runner for the agent with the callback and the existing stateful session ID
+        # Define a helper lambda for cleaner interaction calls
+        interaction_func = lambda query: call_agent_async(query,
+                                                          runner_root_stateful,
+                                                          USER_ID_STATEFUL,  # Use existing user ID
+                                                          SESSION_ID_STATEFUL  # Use existing session ID
+                                                          )
+
 
         # 1. Check weather (Uses initial state: Celsius)
         print("--- Turn 1: Requesting weather in London (expect Celsius) ---")
-        await call_agent_async(query= "What's the weather in London?",
-                               runner=runner_root_stateful,
-                               user_id=USER_ID_STATEFUL,
-                               session_id=SESSION_ID_STATEFUL
-                              )
+        await interaction_func("What is the weather in London?")
+
+        # 2. Request containing the blocked keyword (Callback intercepts)
+        print("\n--- Turn 2: Requesting with blocked keyword (expect blocked) ---")
+        await interaction_func("BLOCK the request for weather in Tokyo")  # Callback should catch "BLOCK"
+
+        # 3. Normal greeting (Callback allows root agent, delegation happens)
+        print("\n--- Turn 3: Sending a greeting (expect allowed) ---")
+        await interaction_func("Hello again")
 
         # 2. Manually update state preference to Fahrenheit - DIRECTLY MODIFY STORAGE
         print("\n--- Manually Updating State: Setting unit to Fahrenheit ---")
@@ -48,20 +60,12 @@ if 'runner_root_stateful' in globals() and runner_root_stateful:
         # 3. Check weather again (Tool should now use Fahrenheit)
         # This will also update 'last_weather_report' via output_key
         print("\n--- Turn 2: Requesting weather in New York (expect Fahrenheit) ---")
-        await call_agent_async(query= "Tell me the weather in New York.",
-                               runner=runner_root_stateful,
-                               user_id=USER_ID_STATEFUL,
-                               session_id=SESSION_ID_STATEFUL
-                              )
+        await interaction_func("Tell me the weather in New York.")
 
         # 4. Test basic delegation (should still work)
         # This will update 'last_weather_report' again, overwriting the NY weather report
         print("\n--- Turn 3: Sending a greeting ---")
-        await call_agent_async(query= "Hi!",
-                               runner=runner_root_stateful,
-                               user_id=USER_ID_STATEFUL,
-                               session_id=SESSION_ID_STATEFUL
-                              )
+        await interaction_func("Hi!")
 
     # --- Execute the `run_stateful_conversation` async function ---
     # Choose ONE of the methods below based on your environment.
