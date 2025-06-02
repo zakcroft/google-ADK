@@ -49,3 +49,20 @@ This module demonstrates how to:
 2. Use the `output_key` feature to automatically save agent responses to session state
 3. Implement tools that can read from and write to session state
 4. Delegate tasks to specialized sub-agents
+
+## Project Components
+
+* **Fundamental Agent Structure**: A weather agent with a single tool (`get_weather`)
+* **Multi-Model Flexibility**: Uses LiteLLM to run the same logic with different LLMs (Gemini, GPT-4o, Claude)
+* **Modular Agent Design**: Specialized sub-agents (`greeting_agent`, `farewell_agent`) with automatic delegation
+* **Session State Management**: Remembers user preferences (`temperature_unit`) and past interactions (`output_key`)
+* **Safety Guardrails**: Implements `before_model_callback` (blocking specific keywords) and `before_tool_callback` (blocking tool execution for specific arguments)
+
+## Key Components
+
+* **Agents & Tools**: Building blocks that define capabilities and reasoning patterns
+* **Runners & Session Services**: Orchestration engine and memory management system
+* **Delegation**: Multi-agent teams for specialization and modularity
+* **Session State**: Context-aware features using `ToolContext` and `output_key`
+* **Callbacks**: Hooks for safety, validation, and policy enforcement
+* **Model Flexibility**: Freedom to choose the best LLM for specific tasks
