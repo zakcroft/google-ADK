@@ -13,7 +13,7 @@ async def call_agent_async(query: str, runner, user_id:str, session_id:str):
   print('session_id===', session_id)
 
   # Verify the initial state was set correctly
-  retrieved_session = runner.session_service.get_session(app_name=APP_NAME,
+  retrieved_session = await runner.session_service.get_session(app_name=APP_NAME,
                                                            user_id=user_id,
                                                            session_id=session_id)
   print("\n--- Present Session State in utils call agent async ---")

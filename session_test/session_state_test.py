@@ -22,7 +22,7 @@ initial_state = {
 }
 
 async def run_session_state():
-    session_stateful = session_service_stateful.create_session(
+    session_stateful = await session_service_stateful.create_session(
         app_name=APP_NAME,  # Use the consistent app name
         user_id=USER_ID_STATEFUL,
         session_id=SESSION_ID_STATEFUL,
@@ -31,7 +31,7 @@ async def run_session_state():
     print(f"✅ Session '{SESSION_ID_STATEFUL}' created for user '{USER_ID_STATEFUL}'.")
 
     # Verify the initial state was set correctly
-    retrieved_session = session_service_stateful.get_session(app_name=APP_NAME,
+    retrieved_session = await session_service_stateful.get_session(app_name=APP_NAME,
                                                                    user_id=USER_ID_STATEFUL,
                                                                    session_id=SESSION_ID_STATEFUL)
     print("\n--- Initial Session State ---")

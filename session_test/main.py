@@ -50,7 +50,7 @@ if 'runner_root_stateful' in globals() and runner_root_stateful:
             # NOTE: In production with persistent services (Database, VertexAI), you would
             # typically update state via agent actions or specific service APIs if available,
             # not by direct manipulation of internal storage.
-            stored_session = session_service_stateful.sessions[APP_NAME][USER_ID_STATEFUL][SESSION_ID_STATEFUL]
+            stored_session = await session_service_stateful.sessions[APP_NAME][USER_ID_STATEFUL][SESSION_ID_STATEFUL]
             stored_session.state["user_preference_temperature_unit"] = "Fahrenheit"
             # Optional: You might want to update the timestamp as well if any logic depends on it
             # import time
@@ -128,7 +128,7 @@ if __name__ == "__main__":
             await run_stateful_conversation()
 
             print("\n--- Inspecting Final Session State ---")
-            final_session = session_service_stateful.get_session(
+            final_session = await session_service_stateful.get_session(
                 app_name=APP_NAME,
                 user_id=USER_ID_STATEFUL,
                 session_id=SESSION_ID_STATEFUL
